@@ -82,9 +82,8 @@
 
             /* Camera */
 
-            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
-            camera.position.set(175.48,2516.73,846.68);
-            camera.lookAt(new THREE.Vector3(0,0,0));
+             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+            camera.position.z = 3;
             
             /* Scene */
 
@@ -103,7 +102,7 @@
             backLight = new THREE.DirectionalLight(0xffffff, 1.0);
             backLight.position.set(100, 0, -100).normalize();
 
-            /* Model */
+            /* Robot Model */
 
             var mtlLoader = new THREE.MTLLoader();
             mtlLoader.setBaseUrl('assets/');
@@ -201,11 +200,6 @@
 
             controls.update();
 
-            //test
-            // Use Math.cos and Math.sin to set camera X and Z values based on angle. 
-            camera.position.z = radius * Math.cos( angle );  
-            camera.position.y = radius * Math.sin( angle );
-            angle += 0.01;
 
             render();
 
@@ -214,8 +208,7 @@
         function render() {
 
             renderer.render(scene, camera);
-            //console.log(camera.position);
-            //console.log(camera);
+
         }
 
     </script>
