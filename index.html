@@ -61,6 +61,10 @@
 
     <script>
 
+        THREE.DefaultLoadingManager.onProgress = function ( item, loaded, total ) {
+            console.log( "LOADING : " + item, loaded, total );
+        };
+
         if (!Detector.webgl) {
             Detector.addGetWebGLMessage();
         }
@@ -88,15 +92,20 @@
             /* Scene */
 
             scene = new THREE.Scene();
+
+            var grid = new THREE.GridHelper(10, 1);
+            grid.position.y = -.5;
+            scene.add(grid);
+
             lighting = true;
 
             ambient = new THREE.AmbientLight(0xffffff, 1.0);
             scene.add(ambient);
 
-            keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(30, 100%, 75%)'), 1.0);
+            keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(130, 100%, 50%)'), .5); //green
             keyLight.position.set(-100, 0, 100);
 
-            fillLight = new THREE.DirectionalLight(new THREE.Color('hsl(240, 100%, 75%)'), 0.75);
+            fillLight = new THREE.DirectionalLight(new THREE.Color('hsl(0, 0%, 20%)'), .5); //white
             fillLight.position.set(100, 0, 100);
 
             backLight = new THREE.DirectionalLight(0xffffff, 1.0);
@@ -118,7 +127,6 @@
                 objLoader.setMaterials(materials);
                 objLoader.setPath('assets/');
                 objLoader.load('robot_1m_optimized.obj', function (object) {
-
                     scene.add(object);
 
                 });
@@ -161,7 +169,6 @@
 
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
-
             renderer.setSize(window.innerWidth, window.innerHeight);
 
         }
@@ -169,24 +176,6 @@
         function onKeyboardEvent(e) {
 
             if (e.code === 'KeyL') {
-
-                lighting = !lighting;
-
-                if (lighting) {
-
-                    ambient.intensity = 0.25;
-                    scene.add(keyLight);
-                    scene.add(fillLight);
-                    scene.add(backLight);
-
-                } else {
-
-                    ambient.intensity = 1.0;
-                    scene.remove(keyLight);
-                    scene.remove(fillLight);
-                    scene.remove(backLight);
-
-                }
 
             }
 
@@ -208,7 +197,7 @@
         function render() {
 
             renderer.render(scene, camera);
-
+            
         }
 
     </script>
