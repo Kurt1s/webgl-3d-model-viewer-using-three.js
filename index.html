@@ -19,6 +19,9 @@
             margin: 0;
             padding: 0;
             background: hsl(0, 0%, 10%);
+            background-image: url("assets/sky.jpeg");
+            background-size: cover;
+
         }
 
         p {
@@ -61,9 +64,7 @@
 
     <script>
 
-        THREE.DefaultLoadingManager.onProgress = function ( item, loaded, total ) {
-            console.log( "LOADING : " + item, loaded, total );
-        };
+        
 
         if (!Detector.webgl) {
             Detector.addGetWebGLMessage();
@@ -73,13 +74,14 @@
 
         var camera, controls, scene, renderer;
         var lighting, ambient, keyLight, fillLight, backLight;
-        var angle = 0;
-        var radius = 5000;
-
+        
         init();
         animate();
-
+        
         function init() {
+            
+            var angle = 0;
+            var radius = 2;
 
             container = document.createElement('div');
             document.body.appendChild(container);
@@ -102,14 +104,22 @@
             ambient = new THREE.AmbientLight(0xffffff, 1.0);
             scene.add(ambient);
 
-            keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(130, 100%, 50%)'), .5); //green
-            keyLight.position.set(-100, 0, 100);
+            hemiLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 0.1 ); 
+            scene.add(hemiLight);
 
-            fillLight = new THREE.DirectionalLight(new THREE.Color('hsl(0, 0%, 20%)'), .5); //white
-            fillLight.position.set(100, 0, 100);
+            keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(130, 100%, 50%)'), 1); //green
+            keyLight.position.set(1,0,0);
 
-            backLight = new THREE.DirectionalLight(0xffffff, 1.0);
-            backLight.position.set(100, 0, -100).normalize();
+            fillLight = new THREE.DirectionalLight(new THREE.Color('hsl(0, 0%, 10%)'), .5); //white
+            fillLight.position.set(1, .5, 1);
+
+            backLight = new THREE.DirectionalLight(0xffffff, .7);
+            backLight.position.set(0, 1, .25);
+
+            const loader = new THREE.TextureLoader();
+            const bgTexture = loader.load('assets/sky.jpeg');
+            scene.background = bgTexture;
+
 
             /* Robot Model */
 
@@ -135,10 +145,11 @@
 
             /* Renderer */
 
-            renderer = new THREE.WebGLRenderer();
+            
+            renderer = new THREE.WebGLRenderer({antialias:true,alpha: true });
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setClearColor(new THREE.Color("hsl(0, 0%, 10%)"));
+            // renderer.setClearColor(new THREE.Color("hsl(0, 0%, 50%)"));
 
             container.appendChild(renderer.domElement);
 
@@ -163,7 +174,10 @@
             window.addEventListener('keydown', onKeyboardEvent, false);
         }
 
-        
+        /* on load item */
+        THREE.DefaultLoadingManager.onProgress = function ( item, loaded, total ) {
+            console.log( "LOADING : " + item, loaded, total );
+        };
 
         function onWindowResize() {
 
@@ -176,7 +190,7 @@
         function onKeyboardEvent(e) {
 
             if (e.code === 'KeyL') {
-
+                //do something with lighting
             }
 
         }
@@ -197,7 +211,6 @@
         function render() {
 
             renderer.render(scene, camera);
-            
         }
 
     </script>
