@@ -19,8 +19,8 @@
             margin: 0;
             padding: 0;
             background: hsl(0, 0%, 10%);
-            background-image: url("assets/sky.jpeg");
-            background-size: cover;
+            /* background-image: url("assets/sky.jpeg");
+            background-size: cover; */
 
         }
 
@@ -88,24 +88,22 @@
 
             /* Camera */
 
-             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .01, 10);
-            camera.position.z = 3;
+             camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, .01, 10);
+            camera.position.z = 1;
             
             /* Scene */
 
             scene = new THREE.Scene();
 
-            var grid = new THREE.GridHelper(10, 1);
+            var grid = new THREE.GridHelper(10, .25);
             grid.position.y = -.5;
             scene.add(grid);
 
             lighting = true;
 
             ambient = new THREE.AmbientLight(0xffffff, 1.0);
-            scene.add(ambient);
 
-            hemiLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 0.1 ); 
-            scene.add(hemiLight);
+            hemiLight = new THREE.HemisphereLight( 0x999999, 0x000000, 1 ); 
 
             keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(130, 100%, 50%)'), 1); //green
             keyLight.position.set(1,0,0);
@@ -116,9 +114,21 @@
             backLight = new THREE.DirectionalLight(0xffffff, .7);
             backLight.position.set(0, 1, .25);
 
-            const loader = new THREE.TextureLoader();
-            const bgTexture = loader.load('assets/sky.jpeg');
-            scene.background = bgTexture;
+            const near = 0;
+            const far = 5;
+            const color = 'black';
+            scene.fog = new THREE.Fog(color, near, far);
+            scene.background = new THREE.Color(color);
+            scene.fog
+
+            /* set lighting */
+            ambient.intensity = 0.25;
+            //scene.add(keyLight);
+            //scene.add(fillLight);
+            //scene.add(backLight);
+            scene.add(hemiLight);
+            scene.add(ambient);
+
 
 
             /* Robot Model */
@@ -149,7 +159,7 @@
             renderer = new THREE.WebGLRenderer({antialias:true,alpha: true });
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.setSize(window.innerWidth, window.innerHeight);
-            // renderer.setClearColor(new THREE.Color("hsl(0, 0%, 50%)"));
+            renderer.setClearColor(new THREE.Color("black"));
 
             container.appendChild(renderer.domElement);
 
@@ -162,11 +172,7 @@
 
             controls.DirectionalLight = true;
 
-            /* set lighting */
-            ambient.intensity = 0.25;
-                    scene.add(keyLight);
-                    scene.add(fillLight);
-                    scene.add(backLight);
+
 
             /* Events */
 
@@ -176,7 +182,8 @@
 
         /* on load item */
         THREE.DefaultLoadingManager.onProgress = function ( item, loaded, total ) {
-            console.log( "LOADING : " + item, loaded, total );
+            if(item == 'assets/robot_1m_optimized.obj')
+                alert("robot spawned")
         };
 
         function onWindowResize() {
